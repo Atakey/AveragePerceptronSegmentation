@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class MultiTrain
 {
     private Logger logger = Logger.getLogger(MultiTrain.class);
-    private int threadNum = 1;//TODO 默认为1 报错
+    private int threadNum = 1;
     private String trainFile;
     private String devFile;
     private int iterate;
@@ -186,51 +186,24 @@ public class MultiTrain
             return ap.featureStructure;
         }
     }
-    @Deprecated
-    class ThreadPool
-    {
-        public int num = 3; //默认线程个数
-        private ExecutorService pool;
-        private Object[] threads;
-
-        public ThreadPool() {
-            this(3);
-        }
-
-        public ThreadPool(int num) {
-            pool = Executors.newFixedThreadPool(num);
-        }
-
-        public void Execute() {
-            for(Object thread:threads) {
-                pool.execute(new Thread((Runnable) thread));
-            }
-            pool.shutdown();
-            try {
-                pool.awaitTermination(1, TimeUnit.HOURS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public static void main(String[] args)
     {
-        int iterate = 12;
-        int threadNum = 7;
+        int iterate = 24;
+        int threadNum = 2;
         String devFile = ".\\AP分词\\dev.dev";
         String testFile = ".\\AP分词\\test.test";
         String trainFile = ".\\AP分词\\train.train";
         String modelFile = ".\\AP分词\\model\\model1.ap";
 
-        MultiTrain multiTrain = new MultiTrain(devFile, devFile, iterate, threadNum);
+        MultiTrain multiTrain = new MultiTrain(trainFile, devFile, iterate, threadNum);
         FeatureStructure featureStructure = multiTrain.train();
         AveragePerceptronAlgorithm averagePerceptronAlgorithm = new AveragePerceptronAlgorithm();
         averagePerceptronAlgorithm.featureStructure = featureStructure;
         averagePerceptronAlgorithm.Test(testFile);
         System.out.println("====================================");
         AveragePerceptronAlgorithm ap = new AveragePerceptronAlgorithm();
-        ap.Train(devFile, devFile, iterate);
+        ap.Train(trainFile, devFile, iterate);
         ap.Test(testFile);
     }
 }
